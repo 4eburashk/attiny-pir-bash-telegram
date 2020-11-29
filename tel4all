@@ -1,0 +1,76 @@
+#!/bin/bash
+#=========================================
+# Version: 0.003
+#
+# Edit by 4eburashk http://csn.net4me.net
+#    On Fri 27 Nov 2020 08:50:22 PM MSK
+# с разными параметрами на разные события
+#=========================================
+
+# Config:
+. tel4all.conf
+# В конфиге всего две, но приватные переменные:
+#TOKEN - токен tg бота
+#CHATID - id чата с ботом или канала
+
+DT="[ $(date) ]";
+
+# function:
+sendTGmess(){
+read -r -d '' DATA <<EOF
+{
+	"chat_id": "$CHATID",
+	"text":	"$1",
+	"parse_mode": "markdown",
+	"disable_web_page_preview": true,
+	"disable_notification": $2	
+}
+EOF
+echo "$DT Отправка сообщения";
+curl -X POST \
+	 -H "Content-Type: application/json" \
+	 -d "$DATA" \
+     "https://api.telegram.org/bot$TOKEN/sendMessage" >/dev/null 2>&1;
+echo "$DT Сообщение отправлено";
+}
+# END of function
+
+# ===================== choise: ====================
+case $1 in
+"-pir")
+read -r -d '' TXT <<EOF
+🛠 PIR Alert!
+
+*💻 NOTEBOOK*
+
+_Сработал датчик движения, подключённый к НОУТБУКУ. Пожалуйста, проверь что именно там происходит._
+
+🥕🥕🥕
+
+[net4me.net](https://net4me.net)
+EOF
+sendTGmess "$TXT" false;
+;;
+
+"-login")
+read -r -d '' TXT1 <<EOF
+🛠 LOGIN Alert!
+
+🥕🥕🥕
+
+EOF
+TXT2="\`\`\`\n$(w)\n\`\`\`";
+TXT3="[net4me.net](https://net4me.net)";
+sendTGmess "$TXT1\n\n$TXT2\n\n_$(date)_\n$TXT3" true;
+;;
+
+*)
+echo "	========= telegram mesage sender";
+echo "	use: $0 [ -pir | -login ] ";
+exit 2;
+;;
+esac
+
+wait;
+exit 0;
+# END
