@@ -5,10 +5,14 @@
 // tg4all от имени указанного tg бота, отправляет сообщение в указаный телеграм чат. 
 
 // датчик PIR припаян к платке digispark следующим образом:
-// PIR          digispark
-// GND    ---   GND
-// SIG    ---   P2
-// VCC    ---   5v
+// PIR                 digispark
+// GND  --------------  GND
+// 
+//                         |d -- P2
+// SIG -- R220Om -- g 2n7000
+//                         |s -- GND
+// VCC  --------------  5v
+//
 
 #include "DigiKeyboard.h"
 volatile bool FLAG = 0; // state up/down.
